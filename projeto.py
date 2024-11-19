@@ -331,8 +331,8 @@ class Personagens(Stats):
         super().__init__(persoStats.vida, persoStats.forca, persoStats.destreza, 
         persoStats.tecnica, persoStats.raciocinio, 
         persoStats.vidAtual, persoStats.vidTemp, 
-        persoStats.vidMin, persoStats.statPrimario, 
-        persoStats.statSecundario, persoStats.enMax, 
+        persoStats.vidMin, persoStats.stat1, 
+        persoStats.stat2, persoStats.enMax, 
         persoStats.enAtual, persoStats.enMin)
         self.persoNome = persoNome
         self.persoNivel = persoNivel
@@ -560,7 +560,7 @@ while continuar >0:
                     enMin = 0
                 stat= Stats(idStat, vida, forca, destreza, tecnica, raciocinio \
                 , vidAtual, vidTemp, vidMin, statPrimario, statSecundario, \
-                enAtual, enMin, enMax)
+                enMax, enAtual, enMin)
                 listaStats.append(stat)
                 break
         case '3':
@@ -803,7 +803,7 @@ while continuar >0:
                         pegarStat = int(input("Qual é o código da ficha desejada? "))
                         persoStats = None
                         for stat in listaStats:
-                            if pegarStat == stat.getIdStat():
+                            if pegarStat == int(stat.idStat):
                                 persoStats = stat
                                 break
                         if persoStats is not None:
@@ -821,7 +821,7 @@ while continuar >0:
                         pegarProf = int(input("Qual é o código da ficha desejada? "))
                         persoProfs = None
                         for prof in listaProfs:
-                            if pegarProf == prof.getIdProf():
+                            if pegarProf == int(prof.idProf):
                                 persoProfs = prof
                                 break
                         if persoProfs is not None:
@@ -860,7 +860,7 @@ while continuar >0:
                         adicionar ao personagem?"))
                         habSel = False #marca que habilidade não foi selecionada ainda
                         for hab in listaHabs:
-                            if escolherHab == hab.getCodigoHab():
+                            if escolherHab == int(hab.codHab):
                                 perso.addSkill(hab)
                                 habSel = True
                                 print(f"Habilidade '{hab.getNomeHab()}' \
