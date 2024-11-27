@@ -1,2 +1,1 @@
-AMO MINHA PRINCESA
-DE MAIS
+Repositório do Projeto RPG
