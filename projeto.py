@@ -2,23 +2,7 @@ import random
 import numpy as np
 import sys
 import copy
-from typing import NewType
 from enum import Enum
-from typing import Optional
-def val_en(self, enAtual):
-    if enAtual > self.enMax:
-        return self.enMax
-    elif enAtual < self.enMin:
-        return self.enMin
-    else:
-        return enAtual 
-def val_hp(self, vidAtual):
-    if (self.vidAtual > self.vida):
-        return self.vida
-    if (self.vidAtual < self.vidMin):
-        return self.vidMin
-    else:
-        return vidAtual
 class Dados():
     def __init__(self, nome, lados: int, multiplicador):
         self.nome = nome
@@ -50,8 +34,8 @@ class Stats():
         self.vidAtual = vidAtual
         self.vidTemp = vidTemp
         self.vidMin = vidMin
-        self.stat1 = statPrimario
-        self.stat2 = statSecundario
+        self.statPrimario = statPrimario
+        self.statSecundario = statSecundario
         self.mult1 = 1.0
         self.mult2 = 0.5
         self.enMax = enMax
@@ -70,20 +54,20 @@ class Stats():
     def setRac(self, raciocinio):
         self.raciocinio = raciocinio
     def setVidAtual(self, vidAtual):
-        self.vidAtual = val_hp(self, vidAtual)
+        self.vidAtual = vidAtual
     def setVidTemp(self, vidTemp):
         self.vidTemp = vidTemp
     def setVidMin(self, vidMin):
         self.vidMin = vidMin
     def setStat1(self, statPrimario):
-        self.stat1 = statPrimario
+        self.statPrimario = statPrimario
     def setStat2(self, statSecundario):
-        self.stat2 = statSecundario
+        self.statSecundario = statSecundario
     def setEnMax(self, enMax):
         self.enMax = enMax
     def setEnAtual(self, enAtual):
-        self.enAtual = val_en(self, enAtual)
-    def setEnMin(self, enMin): 
+        self.enAtual = self, enAtual
+    def setEnMin(self, enMin):
         self.enMin = enMin
     def getIdStat(self):
         return self.idStat
@@ -104,9 +88,9 @@ class Stats():
     def getVidMin(self):
         return self.vidMin
     def getStat1(self):
-        return self.stat1
+        return self.statPrimario
     def getStat2(self):
-        return self.stat2
+        return self.statSecundario
     def getEnMax(self):
         return self.enMax
     def getEnAtual(self):
@@ -116,11 +100,11 @@ class Stats():
     def maisMult1(self):
         self.mult1 = self.mult1 + 0.1
     def menosMult1(self):
-        self.mult1 = self.mult1 - 0.1 
+        self.mult1 = self.mult1 - 0.1
     def maisMult2(self):
         self.mult2 = self.mult2 + 0.1
     def menosMult2(self):
-        self.mult2 = self.mult2 - 0.1 
+        self.mult2 = self.mult2 - 0.1
     def getMult1(self):
         return self.mult1
     def getMult2(self):
@@ -185,11 +169,7 @@ class Habilidades():
         self.alvo = umAlvo
         self.descHab = descHab
         self.tempoRecarga = 0
-    def __del__(self):
-        if self.habBuff is not None:
-            del self.habBuff
-            self.habBuff = None
-    def setCodigoHab(self, codHab):
+    def setCodHab(self, codHab):
         self.codHab = codHab
     def setNomeHab(self, nomHab):
         self.nomHab = nomHab
@@ -205,7 +185,7 @@ class Habilidades():
         self.habMult = habMult
     def setDescHab(self, descHab):
         self.descHab = descHab
-    def getCodigoHab(self):
+    def getCodHab(self):
         return self.codHab
     def getNomeHab(self):
         return self.nomHab
@@ -237,7 +217,7 @@ class Efeitos(Habilidades):
         self.scale = buffEscala
         self.deBuff = deBuff
         self.buffQtd = buffQtd
-    def setTempo(self, tempo):
+    def setTempo(self, tempo): #polimorfismo de habilidades, ao lado de ataques
         self.tempo = tempo
     def setFichaStats(self, umStat):
         self.statBuff = umStat
@@ -251,21 +231,21 @@ class Efeitos(Habilidades):
         if self.scale.value == 0:
             return
         elif self.scale.value == 1:
-            self.umStat.vida = int(self.umStat.vida * self.buffQtd)
+            self.statBuff.vida = int(self.statBuff.vida * self.buffQtd)
         elif self.scale.value == 2:
-            self.umStat.forca = int(self.umStat.forca * self.buffQtd)
+            self.statBuff.forca = int(self.statBuff.forca * self.buffQtd)
         elif self.scale.value == 3:
-            self.umStat.destreza = int(self.umStat.destreza * self.buffQtd)
+            self.statBuff.destreza = int(self.statBuff.destreza * self.buffQtd)
         elif self.scale.value == 4:
-            self.umStat.tecnica = int(self.umStat.tecnica * self.buffQtd)
+            self.statBuff.tecnica = int(self.statBuff.tecnica * self.buffQtd)
         elif self.scale.value == 5:
-            self.umStat.raciocinio = int(self.umStat.raciocinio * self.buffQtd)
+            self.statBuff.raciocinio = int(self.statBuff.raciocinio * self.buffQtd)
         elif self.scale.value == 6:
-            self.umStat.vida = int(self.umStat.vida * self.buffQtd)
-            self.umStat.forca = int(self.umStat.forca * self.buffQtd)
-            self.umStat.destreza = int(self.umStat.destreza * self.buffQtd)
-            self.umStat.tecnica = int(self.umStat.tecnica * self.buffQtd)
-            self.umStat.raciocinio = int(self.umStat.raciocinio * self.buffQtd)
+            self.statBuff.vida = int(self.statBuff.vida * self.buffQtd)
+            self.statBuff.forca = int(self.statBuff.forca * self.buffQtd)
+            self.statBuff.destreza = int(self.statBuff.destreza * self.buffQtd)
+            self.statBuff.tecnica = int(self.statBuff.tecnica * self.buffQtd)
+            self.statBuff.raciocinio = int(self.statBuff.raciocinio * self.buffQtd)
         else:
             return
     def menosBuff10(self):
@@ -285,7 +265,7 @@ class Efeitos(Habilidades):
     def __str__(self):
         return f'COD: {self.codHab} [HABILIDADE: {self.nomHab}] \
         (NÍVEL: {self.lvlHab}): {self.descHab}. Seu efeito é modificar em \
-        {self.buffQtd*100}% de {self.buffEscala} do {self.getAlvo()}'
+        {self.buffQtd*100}% de {self.scale} do {self.getAlvo()}'
 class Ataques(Habilidades):
     def __init__(self, codHab: int, nomHab: str, lvlHab: int, custo: int,\
         recarga: int, umAlvo: Alvos,  descHab, atqEscala: Escalas, \
@@ -295,14 +275,8 @@ class Ataques(Habilidades):
         self.habMult = habMult
         self.effHab = umDado
         self.tempoRecarga = 0
-    def __del__(self):
-        if self.habBuff is not None:
-            del self.habBuff
-            self.habBuff = None
     def setScale(self, atqEscala):
         self.scale = atqEscala
-    def setBuff(self, buff):
-        self.habBuff = buff
     def setMult(self, habMult):
         self.habMult = habMult
     def setEffHab(self, umDado):
@@ -315,38 +289,36 @@ class Ataques(Habilidades):
         return self.effHab
     def ativar(self):
         somaDano= 0
-        rolagem = np.array([self.umDado.rolarDado() for _ in range(self.habMult)])
+        rolagem = np.array([self.effHab.rolarDado() for _ in range(self.habMult)])
         np.set_printoptions(threshold=sys.maxsize)
         somaDano = np.sum(rolagem)    
-        return f'Dano causado por {self.nomHab} foi {somaDano}. Dados: {np.array}'
+        return somaDano
     def habUp(self):
         return self.lvlHab + int(1)
     def __str__(self):
         return f'COD: {self.codHab} [HABILIDADE: {self.nomHab}] \
         (NÍVEL: {self.lvlHab}): {self.descHab}. Seu efeito é causar \
-        {self.habMult} {self.effHab}(s)'
+        {self.habMult} {self.effHab}'
 class Personagens(Stats):
-    def __init__(self, persoNome: str, persoNivel: int, persoRaca: str, \
-    persoClasse, persoStats, persoProfs, habilidades=None):
-        super().__init__(persoStats.vida, persoStats.forca, persoStats.destreza, 
-        persoStats.tecnica, persoStats.raciocinio, 
-        persoStats.vidAtual, persoStats.vidTemp, 
-        persoStats.vidMin, persoStats.stat1, 
-        persoStats.stat2, persoStats.enMax, 
+    def __init__(self, persoCod, persoNome: str, persoNivel: int, persoRaca: str, \
+    persoClasse, persoStats, persoProfs, persoHab, umAllign): #herança de stats junto de agregação
+        super().__init__(persoStats.idStat, persoStats.vida, persoStats.forca, \
+        persoStats.destreza, persoStats.tecnica, persoStats.raciocinio,
+        persoStats.vidAtual, persoStats.vidTemp,
+        persoStats.vidMin, persoStats.statPrimario,
+        persoStats.statSecundario, persoStats.enMax,
         persoStats.enAtual, persoStats.enMin)
+        self.persoCod = persoCod
         self.persoNome = persoNome
         self.persoNivel = persoNivel
         self.persoRaca = persoRaca
-        self.classe = persoClasse
+        self.persoClasse = persoClasse
         self.stats = persoStats
         self.profs = persoProfs
-        if habilidades is None:
-            habilidades = []
-        self.habilidades = habilidades
-    def addSkill(self, hab):
-        if not hasattr(self, 'habilidades'):
-            self.habilidades = []
-        self.habilidades.append(copy.deepcopy(hab))
+        self.persoHab = persoHab
+        self.umAllign = umAllign
+    def setCod(self, persoCod):
+        self.persoCod = persoCod
     def setNome(self, persoNome):
         self.persoNome = persoNome
     def setNivel(self, persoNivel):
@@ -354,11 +326,17 @@ class Personagens(Stats):
     def setRaca(self, persoRaca):
         self.persoRaca = persoRaca
     def setClasses(self, persoClasse):
-        self.classe = persoClasse
+        self.persoClasse = persoClasse
     def setStats(self, persoStats):
         self.stats = persoStats
     def setProfs(self, persoProfs):
         self.profs = persoProfs
+    def setHabs(self, persoHab):
+        self.persoHab = persoHab
+    def setAllign(self, umAllign):
+        self.umAllign = umAllign
+    def getPersoCod(self):
+        return self.persoCod
     def getNome(self):
         return self.persoNome
     def getNivel(self):
@@ -366,57 +344,161 @@ class Personagens(Stats):
     def getRaca(self):
         return self.persoRaca
     def getClasses(self):
-        return self.classe
+        return self.persoClasse
     def getStats(self):
         return self.stats
     def getProfs(self):
         return self.profs
-    def getSkills(self):
-        return list(enumerate(self.habilidades))
+    def getHabs(self):
+        return self.persoHab
+    def getAllign(self):
+        return self.umAllign
     def persoUp(self):
         return self.persoNivel + int(1)
     def __str__(self):
-        return f'NOME: {self.persoNome} NÍVEL: {self.persoNivel} \
-        RAÇA: {self.persoRaca} CLASSE: {self.classe} \
-        HP: {self.stat.vidAtual} / {self.stat.vida} TEMPORÁRIO: {self.stat.vidTemp}\
-        ENERGIA: {self.stat.enAtual} / {self.stat.enMax} \
-        STATS: {self.stat} \
+        return f'NOME: {self.persoNome} NÍVEL: {self.persoNivel} COD: {self.persoCod}\
+        RAÇA: {self.persoRaca} CLASSE: {self.persoClasse} \
+        HP: {self.stats.vidAtual} / {self.stats.vida} TEMPORÁRIO: {self.stats.vidTemp}\
+        ENERGIA: {self.stats.enAtual} / {self.stats.enMax} \
+        STATS: {self.stats} \
         PROFICIÊNCIAS: {self.profs} \
-        HABILIDADES: {self.habilidades}'
-class Guerreiros(Personagens):
-    def __init__(self, persoNome: str, persoNivel: int, persoRaca: str, \
-    persoClasse, persoStats, persoProfs, habilidades=None):
-        super().__init__(self, persoNome, persoNivel, persoRaca, \
-        persoClasse, persoStats, persoProfs, habilidades)
-    
-    def addSkill(self, hab):
-        if not hasattr(self, 'habilidades'):
-            self.habilidades = [socoPerfurante]
-        self.habilidades.append(copy.deepcopy(hab))
-    def persoUp(self):
-        return self.persoNivel + int(1)
-    def __str__(self):
-        return f'NOME: {self.persoNome} NÍVEL: {self.persoNivel} \
-        RAÇA: {self.persoRaca} CLASSE: {self.classe} \
-        HP: {self.stat.vidAtual} / {self.stat.vida} TEMPORÁRIO: {self.stat.vidTemp}\
-        ENERGIA: {self.stat.enAtual} / {self.stat.enMax} \
-        STATS: {self.stat} \
-        PROFICIÊNCIAS: {self.profs} \
-        HABILIDADES: {self.habilidades}'
+        HABILIDADES: {self.persoHab}, É UM {self.umAllign}'
 dado5 = Dados("dado5", 5, 0)
 dado6 = Dados("dado6", 6, 0)
 dado8 = Dados("dado8", 8, 0)
 dado10 = Dados("dado10", 10, 0)
 dado20 = Dados("dado20", 20, 0)
-socoPerfurante= Ataques(codHab=1, nomHab="Golpe Poderoso", lvlHab=1, custo=5, \
-recarga=3, umAlvo=Alvos.ENEMY,   descHab="Um ataque forte que causa dano extra.", \
-atqEscala=Escalas.FOR, umDado=dado10, habMult=2)    
+st1 = Stats(1, 60, 80, 15, 30, 15, 60, 0, 0, 80, 30, 95, 95, 0)
+pf1 = Profs(2, 1, 2, 1, 1)
+
+st2 = Stats(3, 50, 5, 5, 70, 70, 50, 0, 0, 70, 70, 105, 105, 0)
+pf2 = Profs(4, 1, 1, 2, 1)
+
+st3 = Stats(5, 30, 30, 80, 50, 10, 30, 0, 0, 80, 50, 105, 105, 0)
+pf3 = Profs(6, 1, 2, 1, 1)
+
+golpePoderoso= Ataques(codHab=1, nomHab="Golpe Poderoso", lvlHab=1, custo=5, \
+recarga=1, umAlvo=Alvos.ENEMY,   descHab="Um ataque forte que causa dano.", \
+atqEscala= Escalas.FOR, umDado= dado10, habMult=2)    
+
+auraFortificante= Efeitos(codHab=2, nomHab="Aura Fortificante", lvlHab=1, custo=10, \
+recarga=2, umAlvo=Alvos.ALLY,   descHab="Aumenta a força de um aliado.", tempo=2, umStat= st1,\
+buffEscala= Escalas.FOR, deBuff=False, buffQtd=1.2)
+
+flechaPrecisa= Ataques(codHab=3, nomHab="Flecha Precisa", lvlHab=1, custo=3, \
+recarga=0, umAlvo=Alvos.ENEMY,   descHab="Utiliza de uma técnica avançada para lançar a flecha.", \
+atqEscala= Escalas.DES, umDado= dado8, habMult=3)
+
+g1 = Personagens(persoCod= 13, persoNome= "Wesley", persoNivel= 1, persoRaca= "HUMANO", persoClasse= "GUERREIRO", \
+persoStats= st1, persoProfs= pf1, persoHab= golpePoderoso, umAllign= Alvos.ALLY)
+
+m1 = Personagens(persoCod= 12, persoNome= "Francisco", persoNivel= 1, persoRaca= "ZUMBI", persoClasse= "MAGO", \
+persoStats= st2, persoProfs= pf2, persoHab= auraFortificante, umAllign= Alvos.ENEMY)
+
+a1 = Personagens(persoCod= 11, persoNome= "Victor", persoNivel= 1, persoRaca= "ELFO", persoClasse= "ARQUEIRO", \
+persoStats= st3, persoProfs= pf3, persoHab= flechaPrecisa, umAllign= Alvos.ENEMY)
+
 listaDados = [dado5, dado6, dado8, dado10, dado20]
-listaStats = []
-listaProfs = []
-listaHabs = [socoPerfurante]                    
-listaPersonagens = []
-listaGuerreiros = []
+listaStats = [st1, st2, st3]
+listaProfs = [pf1, pf2, pf3]
+listaHabs = [golpePoderoso, auraFortificante, flechaPrecisa]                    
+listaPersonagens = [g1, m1, a1]
+
+def jogar():
+    print("A luta começará. Os personagens disponíveis são:\n")
+    for perso in listaPersonagens:
+        print(perso)
+        print("\n")
+    skip = None
+    skip = input("Digite qualquer coisa para continuar:")
+    print("Escolha um personagem do alinhamento ALLY: ")
+    listaSelecionados = []
+    select1 = True
+    select2 = True
+    while select1 is True:
+            try:
+                pegarPer = int(input("Qual é o código do personagem desejado? "))
+                persoAtual = None
+                for perso in listaPersonagens:
+                    if pegarPer == int(perso.persoCod):
+                        persoAtual = copy.deepcopy(perso)
+                        listaSelecionados.append(persoAtual)
+                        break
+                if persoAtual is not None:
+                    print(f"Ficha encontrada: {persoAtual.getPersoCod()}")
+                    select1 = False
+                    break
+                else:
+                    print("Nenhuma ficha encontrada, tente de novo!")
+            except ValueError:
+                print("Formato inválido, digite um número inteiro!\n")
+    print("Escolha um personagem do alinhamento ENEMY: ")
+    listaInimigos = []
+    while select2 is True:
+            try:
+                pegarPer2 = int(input("Qual é o código do personagem desejado? "))
+                inimAtual = None
+                for perso in listaPersonagens:
+                    if pegarPer2 == int(perso.persoCod):
+                        inimAtual = copy.deepcopy(perso)
+                        listaInimigos.append(inimAtual)
+                        break
+                if inimAtual is not None:
+                    print(f"Ficha encontrada: {inimAtual.getPersoCod()}")
+                    select2 = False
+                    break
+                else:
+                    print("Nenhuma ficha encontrada, tente de novo!")
+            except ValueError:
+                print("Formato inválido, digite um número inteiro!\n")
+    if skip is not None:
+        final = False  
+    while not final:
+        for persoAtual, inimAtual in zip(listaSelecionados, listaInimigos):
+            turno = 0
+            if inimAtual.stats.vidAtual > 0:
+                print(f"É o turno de {persoAtual.persoNome}, da classe {persoAtual.persoClasse}.")
+                print("=============================================")
+                print(f"=============HP:{persoAtual.stats.vidAtual}/{persoAtual.stats.vida} EP:{persoAtual.stats.enAtual}/{persoAtual.stats.enMax}=============")
+                print(f"============={persoAtual.persoHab}=============")
+                print("=============================================")
+                usarSkill = input("Você deseja utilizar a habilidade acima? ")
+                if usarSkill in ["S", "s", "Sim", "sim", "SIM"]:
+                    acerto = dado20.rolarDado()
+                    print("O dado rolou ", acerto)
+                if acerto >= 9:
+                    if inimAtual.umAllign == Alvos.ENEMY and inimAtual.stats.vidAtual > 0:
+                        dano = persoAtual.persoHab.ativar()
+                        print("O dano foi: ", dano)
+                        inimAtual.stats.vidAtual -= dano
+                        print(f"{inimAtual.persoNome} agora tem {inimAtual.stats.vidAtual} HP.")
+                else:
+                    dano = 0
+                    print("O ataque errou!!")
+            else:
+                final= True
+                print("A luta acabou!")
+            if inimAtual.stats.vidAtual > 0:
+                print(f"É o turno de {inimAtual.persoNome}, da classe {inimAtual.persoClasse}.")
+                print("=============================================")
+                print(f"=============HP:{inimAtual.stats.vidAtual}/{inimAtual.stats.vida} EP:{inimAtual.stats.enAtual}/{inimAtual.stats.enMax}=============")
+                print(f"============={inimAtual} utilizou {inimAtual.persoHab}=============")
+                print("=============================================")
+                acerto = dado20.rolarDado()
+                print("O dado rolou ", acerto)
+                if acerto >= 9:
+                    if persoAtual.umAllign == Alvos.ALLY and persoAtual.stats.vidAtual > 0:
+                        dano = inimAtual.persoHab.ativar()
+                        print("O dano foi: ", dano)
+                        persoAtual.stats.vidAtual -= dano
+                        print(f"{persoAtual.persoNome} agora tem {persoAtual.stats.vidAtual} HP.")
+                else:
+                    dano = 0
+                    print("O ataque errou!!")
+                turno += 1
+            else:
+                final= True
+                print("A luta acabou!")
 
 continuar = int(1)
 while continuar >0:
@@ -424,13 +506,14 @@ while continuar >0:
     print("2 - Cadastrar Stats")
     print("3 - Cadastrar Proficiências")
     print("4 - Cadastrar Habilidades")
-    print("5 - Cadastrar Personagem")
+    print("5 - Cadastrar Personagens")
     print("6 - Adição de Habilidades")
-    print("7 - Listar Fichas de Stats")
-    print("8 - Listar Fichas de Proficiências")
-    print("9 - Listar Habilidades")
-    print("10 - Listar Fichas de Capacidades")
+    print("7 - Listar Dados")
+    print("8 - Listar Fichas de Stats")
+    print("9 - Listar Fichas de Proficiências")
+    print("10 - Listar Habilidades")
     print("11 - Listar Personagens")
+    print("12 - Jogar!")
     escolha= input("Escolha o processo desejado de acordo com o número: ")
     match escolha:
         case '1':
@@ -510,29 +593,29 @@ while continuar >0:
                     vidTemp = 0
                 vidMin = vida*(-1)
                 q1 = input("O stat primário para obter energia é? (escreva as 3 primeiras letras do stat): ")
-                if (q1 == "vid" or "VID"): 
+                if (q1 == "vid" or q1 == "VID"):
                     statPrimario = vida
-                elif (q1 == "for" or "FOR"):
+                elif (q1 == "for" or q1 == "FOR"):
                     statPrimario = forca
-                elif (q1 == "des" or "DES"):
+                elif (q1 == "des" or q1 == "DES"):
                     statPrimario = destreza
-                elif (q1 == "tec" or "TEC"):
+                elif (q1 == "tec" or q1 == "TEC"):
                     statPrimario = tecnica
-                elif (q1 == "rac" or "RAC"):
+                elif (q1 == "rac" or q1 == "RAC"):
                     statPrimario = raciocinio
                 else:
                     print("ATRIBUTO INVÁLIDO!")
                     break
                 q2 = input("O stat secundário para obter energia é? (escreva as 3 primeiras letras do stat): ")
-                if (q2 == "vid" or "VID"): 
+                if (q2 == "vid" or q2 == "VID"):
                     statSecundario = vida
-                elif (q2 == "for" or "FOR"):
+                elif (q2 == "for" or q2 == "FOR"):
                     statSecundario = forca
-                elif (q2 == "des" or "DES"):
+                elif (q2 == "des" or q2 == "DES"):
                     statSecundario = destreza
-                elif (q2 == "tec" or "TEC"):
+                elif (q2 == "tec" or q2 == "TEC"):
                     statSecundario = tecnica
-                elif (q2 == "rac" or "RAC"):
+                elif (q2 == "rac" or q2 == "RAC"):
                     statSecundario = raciocinio
                 else:
                     print("ATRIBUTO INVÁLIDO!")
@@ -548,16 +631,12 @@ while continuar >0:
                 else:
                     enMax = (int(statPrimario * 1) + int(statSecundario * 0.5))
                 enAtual = enMax
-                cond3 = input("O personagem possui um valor especial de en. mínima? ")
-                if cond3 in ["Sim", "sim", "s", "S"]:
-                    while True:
-                        try:
-                            enMin = int(input("Qual é o valor de energia mínima? "))
-                            break
-                        except ValueError:
-                            print("Formato inválido, digite um número inteiro!\n")
-                else:
-                    enMin = 0
+                while True:
+                    try:
+                        enMin = int(input("Qual é o valor de energia mínima? "))
+                        break
+                    except ValueError:
+                        print("Formato inválido, digite um número inteiro!\n")
                 stat= Stats(idStat, vida, forca, destreza, tecnica, raciocinio \
                 , vidAtual, vidTemp, vidMin, statPrimario, statSecundario, \
                 enMax, enAtual, enMin)
@@ -786,6 +865,12 @@ while continuar >0:
                 resp5 = input("Deseja cadastrar um personagem? ")
                 if resp5 in ["Não", "não", "nao", "não", "N", "n"]:
                     break
+                while True:
+                        try:
+                            persoCod = int(input("Qual é código do(a) personagem? "))
+                            break
+                        except ValueError:
+                            print("Formato inválido, digite um número inteiro!\n")
                 persoNome = input("Qual é o nome do(a) personagem? ")
                 while True:
                         try:
@@ -831,48 +916,111 @@ while continuar >0:
                             print("Nenhuma ficha encontrada, tente de novo!")
                     except ValueError:
                         print("Formato inválido, digite um número inteiro!\n")
-                if persoClasse == "Guerreiro":
-                    guerreiro = Guerreiros(persoNome, persoNivel, persoRaca, persoClasse, \
-                    persoStats, persoProfs) 
-                    listaGuerreiros.append(guerreiro)
-                    break
-                else:
-                    perso = Personagens(persoNome, persoNivel, persoRaca, persoClasse, \
-                    persoStats, persoProfs) 
-                    listaPersonagens.append(perso)
-                    break
+                while True:
+                    if persoClasse.strip().upper() == "GUERREIRO":
+                        persoHab = golpePoderoso
+                        break
+                    elif persoClasse.strip().upper() == "MAGO":
+                        persoHab = auraFortificante
+                        break
+                    elif persoClasse.strip().upper() == "ARQUEIRO":
+                        persoHab = flechaPrecisa
+                        break
+                    for hab in listaHabs:
+                        print(f"Código: {hab.getCodHab()}, Nome: {hab.getNomeHab()}")
+                    else:
+                        try:
+                            pegarHab = int(input("Qual é o código da habilidade desejada? "))
+                            persoHab = None
+                            for hab in listaHabs:
+                                if pegarHab == int(hab.codHab):
+                                    persoHab = hab
+                                    break
+                            if persoHab is not None:
+                                print(f"Habilidade encontrada: {persoHab.getCodHab()}")
+                                break
+                            else:
+                                print("Nenhuma habilidade encontrada, tente de novo!")  
+                        except ValueError:
+                            print("Formato inválido, digite um número inteiro!\n")
+                while True:
+                    alvoPerso = input("Digite (O personagem é ALLY ou ENEMY?): ").strip().upper()
+                    try:
+                        umAllign = Alvos[alvoPerso]
+                        break
+                    except KeyError:
+                        print("Formato inválido, digite ALLY, ou ENEMY.")
+                perso = Personagens(persoCod, persoNome, persoNivel, persoRaca, \
+                persoClasse, persoStats, persoProfs, persoHab, umAllign)
+                listaPersonagens.append(perso)
+                break
         case '6':
             print("PROCESSO 6: Adição de Habilidades:")
             print("PERSONAGENS DISPONÍVEIS:")
             for perso in listaPersonagens:
                 print(perso)
-            nomeEscolhido = input("Qual é o nome do personagem que receberá habilidades? ")
-            perso = next((p for p in listaPersonagens if p.nome.lower() == nomeEscolhido.lower()), None)
-            if perso is None:
-                print("Personagem não encontrado.")
-            else:
-                print("HABILIDADES DISPONÍVEIS:")
-                for hab in listaHabs:
-                    print(f"Código: {hab.getCodigoHab()}, Nome: {hab.getNomeHab()}")
-                while True:
-                    try:
-                        escolherHab = int(input("Qual é o código da habilidade deseja \
-                        adicionar ao personagem?"))
-                        habSel = False #marca que habilidade não foi selecionada ainda
-                        for hab in listaHabs:
-                            if escolherHab == int(hab.codHab):
-                                perso.addSkill(hab)
-                                habSel = True
-                                print(f"Habilidade '{hab.getNomeHab()}' \
-                                adicionada ao personagem '{perso.nome}' \
-                                com sucesso!")
+                select= input("Você deseja selecionar esse personagem? ")
+                if select in ["s", "S", "Sim", "SIM", "sim"]:
+                    while True:
+                        try:
+                            marca= True
+                            for hab in listaHabs:
+                                print("HABILIDADES DISPONÍVEIS:")
+                                print(f"Código: {hab.getCodHab()}, Nome: {hab.getNomeHab()}")
+                                select2= input("Você deseja selecionar essa habilidade? ")
+                                if select2 in ["s", "S", "Sim", "SIM", "sim"]:
+                                    while True:
+                                        escolherHab = int(input("Qual é o código da habilidade deseja \
+                                adicionar ao personagem?"))
+                                        if escolherHab == int(hab.codHab):
+                                            perso.setHabs(hab)
+                                            print(f"Habilidade '{hab.getNomeHab()}' \
+                                            adicionada ao personagem '{perso.persoNome}' \
+                                            com sucesso!")
+                                            marca = False
+                                            break
+                                else:
+                                    continue
+                            if marca == False:
                                 break
-                        if habSel:
-                            break
-                        else:
-                            print("Nenhuma habilidade encontrada, tente de novo!")
-                    except ValueError:
-                        print("Formato inválido, digite um número inteiro!\n")
+                            else:
+                                print("Nenhuma habilidade encontrada, tente de novo!")
+                        except ValueError:
+                            print("Formato inválido, digite um número inteiro!\n")
+                else:
+                    continue    
+        case '7':
+            print("PROCESSO 7: Listar Dados:")
+            print("DADOS DISPONÍVEIS:")
+            for dado in listaDados:
+                print(dado)
+        case '8':
+            print("PROCESSO 8: Listar Fichas de Stats:")
+            print("FICHAS DE STAT DISPONÍVEIS:")
+            for stat in listaStats:
+                print(stat)
+        case '9':
+            print("PROCESSO 9: Listar Fichas de Proficiências:")
+            print("FICHAS DE PROF DISPONÍVEIS:")
+            for prof in listaProfs:
+                print(prof)
+        case '10':
+            print("PROCESSO 10: Listar Habilidades:")
+            print("HABILIDADES DISPONÍVEIS:")
+            for hab in listaHabs:
+                print(hab)
+        case '11':
+            print("PROCESSO 11: Listar Personagens:")
+            for perso in listaPersonagens:
+                print(f"NOME: {perso.persoNome} RAÇA: {perso.persoRaca} CLASSE:\
+        {perso.persoClasse} COD: {perso.persoCod}\
+        HP: {perso.stats.vidAtual} / {perso.stats.vida} TEMPORÁRIO: {perso.stats.vidTemp}\
+        ENERGIA: {perso.stats.enAtual} / {perso.stats.enMax} \
+        STATS: {perso.stats} \
+        PROFICIÊNCIAS: {perso.profs} \
+        HABILIDADES: {perso.persoHab}'")
+        case '12':
+            jogar()
         case _:
             processo = input("DESEJA CONTINUAR OPERAÇÕES? ")
             match processo:
